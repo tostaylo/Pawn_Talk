@@ -1,0 +1,7 @@
+#link{
+color: white;
+}
+
+::selection {
+  background: white; /* WebKit/Blink Browsers */
+}
