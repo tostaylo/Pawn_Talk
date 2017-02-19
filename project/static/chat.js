@@ -1,8 +1,14 @@
- var socket = io.connect('http://' + document.domain + ':' + location.port);
+ let socket = io.connect('http://' + document.domain + ':' + location.port);
+
     socket.on('connect', function() {
         socket.send('user connected');
-        console.log('connection happened')
+
     });
+
+    socket.on('disconnect', function() {
+        socket.send('user disconnected')
+    });
+
     socket.on('message', function(msg){
     console.log('message received');
     $('#messages').append('<li>' + msg + '</li>');
@@ -13,10 +19,11 @@
         console.log('message sent');
     });
 
-    $('#link').text(window.location.href);
 
 
+ $('#link').text(window.location.href);
 
+//COPY URL TO CLIPBOARD
 var copyBtn = document.querySelector('#copy');
 
     copyBtn.addEventListener('click', function () {
@@ -32,3 +39,12 @@ var copyBtn = document.querySelector('#copy');
       // execute 'copy', can't 'cut' in this case
       document.execCommand('copy');
     }, false);
+
+
+//COUNT CONECTIONS// HOW DO I GET VARIABLE OUT OF GLOBAL SCOPE
+
+
+
+
+
+

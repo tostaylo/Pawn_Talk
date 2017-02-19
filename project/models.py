@@ -3,15 +3,13 @@ from project import db
 
 
 
-class Boiler1(db.MODEL):
+class ChatRoom(db.Model):
 
-    __tablename__ = 'boiler'
+    __tablename__ = 'chatroom'
 
     id = db.Column(db.Integer, primary_key=True)
-    first_name = db.Column()
-    last_name = db.Column()
-    boiler2 = db.relationship('Boiler2', backref='bpiler1', lazy="dynamic")
+    url = db.Column(db.Text)
 
-    def __init__(self, first_name, last_name):
-        first_name = self.first_name
-        last_name = self.last_name
+
+    def __init__(self, url):
+        self.url = url

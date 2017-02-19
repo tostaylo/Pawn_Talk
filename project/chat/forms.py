@@ -3,4 +3,4 @@ from wtforms import BooleanField, StringField, PasswordField, IntegerField, vali
 
 
 class UrlForm(FlaskForm):
-    url = StringField('domain/', [validators.Length(min=1)])
+    url = StringField('domain/')

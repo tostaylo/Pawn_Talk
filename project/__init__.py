@@ -8,7 +8,7 @@ app = Flask(__name__, static_url_path='/static')
 CsrfProtect(app)
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost/boiler1_db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost/chat_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = "STRING"
 app.config['TEMPLATES_AUTO_RELOAD'] = True
