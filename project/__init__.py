@@ -8,7 +8,17 @@ app = Flask(__name__, static_url_path='/static')
 CsrfProtect(app)
 
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost/chat_db'
+
+if os.environ.get('ENV') == 'production':
+    debug = False
+    # Heroku gives us an environment variable called DATABASE_URL when we add a postgres database
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
+else:
+    debug = True
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost/chat_db'
+
+
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'postgres://localhost/chat_db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = "STRING"
 app.config['TEMPLATES_AUTO_RELOAD'] = True
