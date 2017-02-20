@@ -5,3 +5,11 @@ color: white;
 ::selection {
   background: white; /* WebKit/Blink Browsers */
 }
+
+
+
+
+ video {
+  max-width: 100%;
+  width: 320px;
+}
