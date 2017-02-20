@@ -246,7 +246,7 @@ function trace(text) {
 
 
  //SOCKET CONNECTION
- let socket = io.connect('//' + document.domain + ':' + location.port);
+ let socket = io.connect('https://' + document.domain + ':' + location.port);
 
     socket.on('connect', function() {
         socket.send('user connected');
