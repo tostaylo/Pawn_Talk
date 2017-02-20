@@ -61,10 +61,13 @@ def handle_message(msg):
 
 
 # Keep track of connected users
-class Socket:
+'''class Socket:
     def __init__(self, sid):
         self.sid = sid
         self.connected = True
+
+
+
 sockets = {}
 
 
@@ -80,7 +83,7 @@ def remove_socket():
     del sockets[request.sid]
     ## if sockets length == 0 then remove url from database
 
-    print(len(sockets))
+    print(len(sockets))'''
 
 
 
@@ -88,26 +91,3 @@ def remove_socket():
 
 
 
-##Generate nicknames for after logging in
-## send code to email to join private room?
-##Generate route from private room?
-##Encrypted
-##Destroyed message after reading
-##Style it
-#appear.in clone
-#leave a message if person doesn't show up
-#sepeaate user messages by like imessage
-#only allow for a certain number of connections
-#add url to database, if it's in database connect, if not redirect
-#add funcionality for code smippets
-#user create your key, key is hashed and stored in database with a random 12 digit string which will be the route
-#no more connections and that deletes the random 12 digit string asssociated with the user
-#comments!
-#right now you can go to any url
-#push notifications?
-#gererate keys and give keys to people for access
-#go to url and it asks "Do you have the key to this room"? if yes type it in and it matches key to room with room
-#     to let you in. If not you are denied.
-#  Use Twilio for two-factor authentication.  Sign in with username and password. if you get that correct then
-#      Twilio will send you a code. Type Code in and if it's a match you are signed in."
-#usernames?
