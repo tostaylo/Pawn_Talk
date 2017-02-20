@@ -21,7 +21,7 @@ from project.chat.views import chat_blueprint
 #This is where you import more blueprints. Don't forget to register them below!
 
 
-app.register_blueprint(chat_blueprint, url_prefix='/chat')
+app.register_blueprint(chat_blueprint)
 
 
 
