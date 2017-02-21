@@ -264,10 +264,10 @@ function trace(text) {
     console.log(username);
     if(msg.username === username){
         console.log('username is what you entered')
-        $('#messages').append('<li class="left">' + msg.data +  '</li>');
+        $('#messages').append('<li class="right"><span class ="span_right">' + msg.data +  '</span></li><li class="buffer">li</li>');
         $("#messages").scrollTop($('#messages').height())
     } else {
-        $('#messages').append('<li class="right">' + msg.data +  '</li>');
+        $('#messages').append('<li class="left"><span class ="span_left">' + msg.data +  '</span></li><li class="buffer">li</li>');
         $("#messages").scrollTop($('#messages').height())
         }
     });
