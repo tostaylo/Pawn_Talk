@@ -141,7 +141,7 @@ socket.on('username_message', function (msg) {
     console.log('message received');
 });
 
-socket.on('video', function(msg) {
+socket.on('video', function(message) {
     if (!peerConnection) start(false);
 
     var signal = JSON.parse(message.data);
