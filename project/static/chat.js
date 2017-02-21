@@ -62,6 +62,7 @@ function start(isCaller) {
 
 
 function gotDescription(description) {
+debugger;
     console.log('got description');
     peerConnection.setLocalDescription(description, function () {
         socket.emit('video', JSON.stringify({
@@ -90,20 +91,6 @@ function createOfferError(error) {
 }
 
 //ANSWERING THE CliENt
-function gotMessageFromServer(message) {
-    if (!peerConnection) start(false);
-
-    var signal = JSON.parse(message.data);
-    if (signal.sdp) {
-        peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp), function () {
-            if (signal.sdp.type == 'offer') {
-                peerConnection.createAnswer(gotDescription, createAnswerError);
-            }
-        });
-    } else if (signal.ice) {
-        peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice));
-    }
-}
 
 
 
@@ -147,13 +134,19 @@ socket.on('video', function(message) {
 
     var signal = JSON.parse(message);
     if (signal.sdp) {
-        peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp), function () {
-            if (signal.sdp.type == 'offer') {
+        peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function(){
+        if (signal.sdp.type == 'offer') {
                 peerConnection.createAnswer(gotDescription, createAnswerError);
             }
+        }).catch(function(){
+        console.log(arguments);
         });
     } else if (signal.ice) {
-        peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice));
+        peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).then(function(){
+        console.log(arguments);
+        }).catch(function(){
+        console.log(arguments);
+        });
     }
 });
 
