@@ -97,6 +97,11 @@ def handle_message(msg):
             emit('message', {'data': msg['data'], 'username': username}, broadcast=True)
 
 
+@socketio.on('message')
+def handle_video(msg):
+    emit('video', msg)
+
+
 #on line 83 if socket.username != msg['data'] then socket.username = msg['data']
 #else display a message, username is taken
 # could be done with sending a true or false variable to javascript
