@@ -159,12 +159,11 @@ li {
 
 ul {
     padding: 0;
-    width: 40%;
+    width: 100%;
     position: absolute;
     bottom: 0;
     list-style: none;
     overflow: auto;
-    right: 0;
     max-height: 10000px;
 }
 
@@ -178,6 +177,9 @@ ul {
     border: 1px solid black;
     color: white;
     border-radius: 4px;
+    max-width: 50px;
+    font-size: 14px;
+    word-wrap: break-word;
 }
 
 .span_right {
@@ -185,6 +187,9 @@ ul {
     background: #6a5acd;
     color: white;
     border-radius: 4px;
+    max-width: 50px;
+    font-size: 14px;
+    word-wrap: break-word;
 }
 
 .buffer {
