@@ -60,30 +60,34 @@ def handle_message(msg):
 
 
 
+
+
 # Keep track of connected users
-'''class Socket:
+class Socket:
     def __init__(self, sid):
         self.sid = sid
         self.connected = True
+        self.username = sid
 
 
+sockets = []
 
-sockets = {}
-
+##look in array and find the sid with the request.sid, send username with the message.
 
 
 @socketio.on('connect')
 def add_socket():
-    sockets[request.sid] = Socket(request.sid)
-    print(current_url)
+    this_socket = (Socket(request.sid))
+    sockets.append(this_socket.sid)
+    print(sockets)
     print(len(sockets))
 
 @socketio.on('disconnect')
 def remove_socket():
-    del sockets[request.sid]
-    ## if sockets length == 0 then remove url from database
-
-    print(len(sockets))'''
+    socket_to_remove = sockets.index(request.sid)
+    sockets.pop(socket_to_remove)
+    print(socket_to_remove)
+    print(len(sockets))
 
 
 

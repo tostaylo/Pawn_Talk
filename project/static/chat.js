@@ -246,11 +246,10 @@ function trace(text) {
 
 
  //SOCKET CONNECTION
- let socket = io.connect('https://' + document.domain + ':' + location.port);
+ let socket = io.connect('//' + document.domain + ':' + location.port);
 
     socket.on('connect', function() {
         socket.send('user connected');
-
     });
 
     socket.on('disconnect', function() {
@@ -260,7 +259,6 @@ function trace(text) {
     socket.on('message', function(msg){
     console.log('message received');
     $('#messages').append('<li>' + msg + '</li>');
-
     });
 
     $('#send_button').on('click', function(){
@@ -290,7 +288,6 @@ var copyBtn = document.querySelector('#copy');
     }, false);
 
 
-//COUNT CONECTIONS// HOW DO I GET VARIABLE OUT OF GLOBAL SCOPE
 
 
 
