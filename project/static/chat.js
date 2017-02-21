@@ -142,9 +142,10 @@ socket.on('username_message', function (msg) {
 });
 
 socket.on('video', function(message) {
+    debugger;
     if (!peerConnection) start(false);
 
-    var signal = JSON.parse(message.data);
+    var signal = JSON.parse(message);
     if (signal.sdp) {
         peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp), function () {
             if (signal.sdp.type == 'offer') {
