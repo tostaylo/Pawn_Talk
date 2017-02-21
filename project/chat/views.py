@@ -52,11 +52,6 @@ def chat(user_route):
 
 #SOCKET EVENTS
 
-@socketio.on('message')
-def handle_message(msg):
-    print(msg)
-    send(msg, broadcast=True)
-
 
 
 
@@ -78,8 +73,8 @@ sockets = []
 @socketio.on('connect')
 def add_socket():
     this_socket = (Socket(request.sid))
-    sockets.append(this_socket.sid)
-    print(sockets)
+    sockets.append(this_socket)
+    print(sockets[0])
     print(len(sockets))
 
 @socketio.on('disconnect')
@@ -89,9 +84,24 @@ def remove_socket():
     print(socket_to_remove)
     print(len(sockets))
 
+@socketio.on('username_message')
+def handle_username_message(msg):
+    print(msg['data'])
+    for socket in sockets:
+        if request.sid == socket.sid:
+            socket.username = msg['data']
+            print(socket.username)
+
+    emit('username_message', {'data': msg['data']}, broadcast=True)
 
 
-
+@socketio.on('message')
+def handle_message(msg):
+    print(msg)
+    for socket in sockets:
+        if request.sid == socket.sid:
+            username = socket.username
+            send(username, broadcast=True)
 
 
 

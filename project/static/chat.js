@@ -261,9 +261,23 @@ function trace(text) {
     $('#messages').append('<li>' + msg + '</li>');
     });
 
+    socket.on('username_message', function(msg){
+    console.log('message received');
+    $('#messages').append('<li>' + msg.data + '</li>');
+    });
+
+
     $('#send_button').on('click', function(){
         socket.send($('#my_message').val());
+        socket.send($('#username_input').val());
+        console.log($('#username_input').val())
         console.log('message sent');
+    });
+
+     $('#send_username_button').on('click', function(){
+        socket.emit('username_message', {data: $('#username_input').val()});
+        console.log($('#username_input').val())
+        return false;
     });
 
 
