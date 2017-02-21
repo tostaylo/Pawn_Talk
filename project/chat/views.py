@@ -99,7 +99,7 @@ def handle_message(msg):
 
 @socketio.on('video')
 def handle_video(msg):
-    emit('video', msg)
+    emit('video', msg, broadcast = True)
 
 
 #on line 83 if socket.username != msg['data'] then socket.username = msg['data']
