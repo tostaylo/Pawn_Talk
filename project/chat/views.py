@@ -69,20 +69,11 @@ sockets = []
 
 ##look in array and find the sid with the request.sid, send username with the message.
 
-
 @socketio.on('connect')
 def add_socket():
-    this_socket = (Socket(request.sid))
-    sockets.append(this_socket)
-    print(sockets[0])
-    print(len(sockets))
+    sockets.append(Socket(request.sid))
+    print(sockets)
 
-@socketio.on('disconnect')
-def remove_socket():
-    socket_to_remove = sockets.index(request.sid)
-    sockets.pop(socket_to_remove)
-    print(socket_to_remove)
-    print(len(sockets))
 
 @socketio.on('username_message')
 def handle_username_message(msg):
@@ -97,11 +88,18 @@ def handle_username_message(msg):
 
 @socketio.on('message')
 def handle_message(msg):
-    print(msg)
+    print(sockets)
+    print(msg['data'])
     for socket in sockets:
+        print(socket)
         if request.sid == socket.sid:
             username = socket.username
-            send(username, broadcast=True)
+            emit('message', {'data': msg['data'], 'username': username}, broadcast=True)
 
 
-
+#on line 83 if socket.username != msg['data'] then socket.username = msg['data']
+#else display a message, username is taken
+# could be done with sending a true or false variable to javascript
+# if true then show the error if false then remove the input field.
+#have to emit a 'username error' message probably and have an event listener ready for it, might be a specific event in the docs
+# OR I could force them to pick a username

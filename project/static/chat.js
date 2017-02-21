@@ -248,37 +248,49 @@ function trace(text) {
  //SOCKET CONNECTION
  let socket = io.connect('//' + document.domain + ':' + location.port);
 
-    socket.on('connect', function() {
+   /* socket.on('connect', function() {
         socket.send('user connected');
     });
 
     socket.on('disconnect', function() {
         socket.send('user disconnected')
-    });
+    });*/
+
+
 
     socket.on('message', function(msg){
-    console.log('message received');
-    $('#messages').append('<li>' + msg + '</li>');
+    let username = $('#username_input').val();
+    console.log(msg.username);
+    console.log(username);
+    if(msg.username === username){
+        console.log('username is what you entered')
+        $('#messages').append('<li class="left">' + msg.data +  '</li>');
+        $("#messages").scrollTop($('#messages').height())
+    } else {
+        $('#messages').append('<li class="right">' + msg.data +  '</li>');
+        $("#messages").scrollTop($('#messages').height())
+        }
     });
 
     socket.on('username_message', function(msg){
     console.log('message received');
-    $('#messages').append('<li>' + msg.data + '</li>');
     });
 
 
     $('#send_button').on('click', function(){
-        socket.send($('#my_message').val());
-        socket.send($('#username_input').val());
-        console.log($('#username_input').val())
-        console.log('message sent');
+        socket.emit('message', {'data': $('#my_message').val()});
+        $('#my_message').val("")
+        console.log($('#my_message').val());
+        return false;
     });
 
      $('#send_username_button').on('click', function(){
-        socket.emit('username_message', {data: $('#username_input').val()});
+        socket.emit('username_message', {'data': $('#username_input').val()});
         console.log($('#username_input').val())
         return false;
     });
+
+
 
 
 
