@@ -97,7 +97,7 @@ def handle_message(msg):
             emit('message', {'data': msg['data'], 'username': username}, broadcast=True)
 
 
-@socketio.on('message')
+@socketio.on('video')
 def handle_video(msg):
     emit('video', msg)
 
