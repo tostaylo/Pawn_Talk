@@ -1,27 +1,38 @@
-{% extends 'base.html' %}
-
-
-{% block content %}
-<div id = outer-container>
-    <video id="localVideo" autoplay></video>
-    <video id="remoteVideo" autoplay></video>
-    <div>
-       <input type="button" id="start" onclick="start(true)" value="Start Video"></input>
-
+{% extends 'base.html' %} {% block content %}
+<div id="header"></div>
+<div id=username_overlay>
+    <div id="username_input_div">
+        <div id="username_input_div_inner">
+            <label id="username_label" for="username_input">Create a Username</label>
+            <input id="username_input" type="text">
+            <button class="button" id="send_username_button">Start</button>
+        </div>
     </div>
-    <input id="username_input" type="text">
-    <button id="send_username_button">send username</button>
-
-    <div id = "message_list_div">
-        <ul id="messages"></ul>
-        <ul id="messages2"></ul>
-    </div>
-
-        <input type="text" id="my_message">
-        <button id="send_button">Send</button>
-
+</div>
+<div id=outer_container>
     <div id="link"></div>
-    <button id ="copy">Copy Link to Clipboard</button>
+    <button class="button" id="copy">Copy Room Link</button>
+    <div id="video_container">
+        <div id="video_flex_container">
+            <video id="localVideo" autoplay muted></video>
+            <video id="remoteVideo" autoplay></video>
+        </div>
+        <div>
+            <input class="button" type="button" id="start" onclick="start(true)" value="Start Video"></input>
+
+        </div>
+    </div>
+
+
+    <div id="messages_container">
+        <div id="message_list_div">
+            <ul id="messages"></ul>
+        </div>
+        <div id="message_input_container">
+            <input type="text" id="my_message">
+            <button class="button" id="send_button">Send</button>
+        </div>
+    </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.1.1.js" integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA=" crossorigin="anonymous"></script>
