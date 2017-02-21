@@ -141,6 +141,21 @@ socket.on('username_message', function (msg) {
     console.log('message received');
 });
 
+socket.on('video', function(msg) {
+    if (!peerConnection) start(false);
+
+    var signal = JSON.parse(message.data);
+    if (signal.sdp) {
+        peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp), function () {
+            if (signal.sdp.type == 'offer') {
+                peerConnection.createAnswer(gotDescription, createAnswerError);
+            }
+        });
+    } else if (signal.ice) {
+        peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice));
+    }
+});
+
 
 $('#send_button').on('click', function () {
     socket.emit('message', {
