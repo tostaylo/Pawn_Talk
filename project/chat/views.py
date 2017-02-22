@@ -30,8 +30,6 @@ def index():
 
         if db_url == None:
             #add new url to database
-            current_url = user_url.url
-            print(current_url)
             url = ChatRoom(user_url.url)
             db.session.add(url)
             db.session.commit()
@@ -74,29 +72,44 @@ sockets = []
 @socketio.on('connect')
 def add_socket():
     sockets.append(Socket(request.sid))
+    print(sockets)
+
+@socketio.on('disconnect')
+def remove_socket():
+    for socket in sockets:
+        if socket.sid == request.sid:
+            sockets.remove(socket)
+            print(sockets)
 
 
 
 @socketio.on('username_message')
 def handle_username_message(msg):
-    print(msg['data'])
     for socket in sockets:
         if request.sid == socket.sid:
             socket.username = msg['data']
-
             username = socket.username
             emit('username_message', {'data': msg['data'], 'username': username}, broadcast=True)
 
 
+
+
 @socketio.on('message')
 def handle_message(msg):
-    print(sockets)
-    print(msg['data'])
+    username = ''
+    guest_name = ''
     for socket in sockets:
-
         if request.sid == socket.sid:
             username = socket.username
-            emit('message', {'data': msg['data'], 'username': username}, broadcast=True)
+
+
+        else:
+            guest_name = socket.username
+
+    print(guest_name)
+    print(username)
+    emit('message', {'data': msg['data'], 'username': username, 'guest_name': guest_name}, broadcast=True)
+
 
 @socketio.on('guest_name')
 def handle_guest_name(msg):
