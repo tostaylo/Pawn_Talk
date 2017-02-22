@@ -3,131 +3,6 @@ $('document').ready(function(){
 //SOCKET CONNECTION
 let socket = io.connect('//' + document.domain + ':' + location.port);
 
-/*var localVideo;
-var remoteVideo;
-var peerConnection;
-var peerConnectionConfig = {
-    'iceServers': [{
-        'url': 'stun:stun.services.mozilla.com'
-    }, {
-        'url': 'stun:stun.l.google.com:19302'
-    }]
-};
-
-navigator.getUserMedia = navigator.getUserMedia || navigator.mozGetUserMedia || navigator.webkitGetUserMedia;
-window.RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
-window.RTCIceCandidate = window.RTCIceCandidate || window.mozRTCIceCandidate || window.webkitRTCIceCandidate;
-window.RTCSessionDescription = window.RTCSessionDescription || window.mozRTCSessionDescription || window.webkitRTCSessionDescription;
-
-
-//GET USER MEDIA
-function pageReady() {
-    localVideo = document.getElementById('localVideo');
-    remoteVideo = document.getElementById('remoteVideo');
-
-
-
-    var constraints = {
-        video: true,
-        audio: true,
-    };
-
-    if (navigator.getUserMedia) {
-        navigator.getUserMedia(constraints, getUserMediaSuccess, getUserMediaError);
-    } else {
-        alert('Your browser does not support getUserMedia API');
-    }
-}
-
-function getUserMediaSuccess(stream) {
-    localStream = stream;
-    localVideo.src = window.URL.createObjectURL(stream);
-}
-
-function getUserMediaError(error) {
-    console.log(error);
-}
-
-pageReady();
-
-//FUNCTION CALLED ON START BUTTON CLICK
-function start(isCaller) {
-    peerConnection = new RTCPeerConnection(peerConnectionConfig);
-    peerConnection.onicecandidate = gotIceCandidate;
-    peerConnection.onaddstream = gotRemoteStream;
-    peerConnection.addStream(localStream);
-
-    if (isCaller) {
-        peerConnection.createOffer(gotDescription, createOfferError);
-    }
-}
-
-
-function gotDescription(description) {
-
-    console.log('got description');
-    peerConnection.setLocalDescription(description, function () {
-        socket.emit('handshake', JSON.stringify({
-            'sdp': description
-        }));
-    }, function () {
-        console.log('set description error')
-    });
-}
-
-function gotIceCandidate(event) {
-    if (event.candidate != null) {
-        socket.emit('ice', JSON.stringify({
-            'ice': event.candidate
-        }));
-    }
-}
-
-function gotRemoteStream(event) {
-    console.log('got remote stream');
-    remoteVideo.src = window.URL.createObjectURL(event.stream);
-}
-
-function createOfferError(error) {
-    console.log(error);
-}
-
-//ANSWERING THE CliENt
-
-
-*/
-/*
-socket.on('handshake', function(message) {
-
-    if (!peerConnection) start(false);
-    var signal = JSON.parse(message);
-    if (signal.sdp) {
-        peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function(){
-            if (signal.sdp.type == 'offer') {
-                  return peerConnection.createAnswer();
-              }
-
-        }).then(gotDescription)
-        .catch(function(){
-            console.log(arguments);
-        });
-    }
- });
-
-
-
- socket.on('ice', function(message) {
-  if (!peerConnection) start(false);
-    var signal = JSON.parse(message);
-     if (signal.ice) {
-        peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).then(function(){
-        console.log(arguments);
-        }).catch(function(){
-        console.log(arguments);
-        });
-    }
-});
-*/
 
 
 
@@ -142,18 +17,15 @@ socket.on('handshake', function(message) {
  });*/
 
 
-
+//SEND AND RECEIVE CHAT MESSAGES, SEPARATE BY USERNAME AND GUESTNAME
 socket.on('message', function (msg) {
     let username = $('#username_input').val();
-    console.log(msg.guest_name)
-    console.log(msg.username)
+
     if (msg.username === username) {
         var itemR = $('<li class="buffer">'+ username +'</li><li class="right"><p class ="span_right">' + msg.data + '</p></li>').hide().fadeIn(1000);
         $('#messages').append(itemR);
         $("#messages").scrollTop($('#messages').height())
     } else if (msg.guest_name === username) {
-        console.log(msg.guest_name)
-        console.log(msg.username)
         var itemL = $('<li class="buffer">'+ msg.username + '</li><li class="left"><p class ="span_left">' + msg.data + '</p></li>').hide().fadeIn(1000);
         $('#messages').append(itemL);
         $("#messages").scrollTop($('#messages').height())
@@ -164,6 +36,12 @@ socket.on('username_message', function (msg) {
     let username = msg.username;
     console.log("the user name is " + username)
 
+});
+
+socket.on('move', function (msg) {
+    game.move(msg);
+    console.log(msg);
+    board.position(game.fen()); // fen is the board layout
 });
 
 
@@ -234,6 +112,124 @@ $('#send_username_button').on('click', function () {
 
 //Focus input on Load
 document.getElementById("username_input").focus();
+
+
+
+
+
+
+///CHESSSSSSSSS
+
+
+
+
+
+
+
+var board,
+  game = new Chess(),
+  statusEl = $('#status'),
+  fenEl = $('#fen'),
+  pgnEl = $('#pgn');
+
+// do not pick up pieces if the game is over
+// only pick up pieces for the side to move
+var onDragStart = function(source, piece, position, orientation) {
+  if (game.game_over() === true ||
+      (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+      (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+    return false;
+  }
+};
+
+var onDrop = function(source, target) {
+  // see if the move is legal
+  var move = game.move({
+    from: source,
+    to: target,
+    promotion: 'q' // NOTE: always promote to a queen for example simplicity
+  });
+
+  handleMove(move.from, move.to);
+
+  // illegal move
+  if (move === null) return 'snapback';
+
+  updateStatus();
+};
+
+// update the board position after the piece snap
+// for castling, en passant, pawn promotion
+var onSnapEnd = function() {
+  board.position(game.fen());
+
+};
+
+var updateStatus = function() {
+  var status = '';
+
+  var moveColor = 'White';
+  if (game.turn() === 'b') {
+    moveColor = 'Black';
+  }
+
+  // checkmate?
+  if (game.in_checkmate() === true) {
+    status = 'Game over, ' + moveColor + ' is in checkmate.';
+  }
+
+  // draw?
+  else if (game.in_draw() === true) {
+    status = 'Game over, drawn position';
+  }
+
+  // game still on
+  else {
+    status = moveColor + ' to move';
+
+    // check?
+    if (game.in_check() === true) {
+      status += ', ' + moveColor + ' is in check';
+    }
+  }
+
+  statusEl.html(status);
+  fenEl.html(game.fen());
+  pgnEl.html(game.pgn());
+};
+
+var cfg = {
+  pieceTheme: '../../../static/chessboardjs/img/chesspieces/wikipedia/{piece}.png',
+  draggable: true,
+  position: 'start',
+  onDragStart: onDragStart,
+  onDrop: onDrop,
+  onSnapEnd: onSnapEnd
+};
+board = ChessBoard('gameBoard', cfg);
+
+updateStatus();
+
+
+
+
+
+
+
+
+
+
+
+
+
+// called when a player makes a move on the board UI
+var handleMove = function(source, target) {
+    console.log(source,target)
+    const move = {from: source, to: target}
+    game.move(move);
+    socket.emit('move', move);
+}
+
 
 
 

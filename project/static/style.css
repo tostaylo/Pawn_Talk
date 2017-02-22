@@ -275,3 +275,24 @@ margin-left: 10px;
 .fa-comment-o{
 color: white;
 }
+
+#gameBoard{
+width: 500px;
+height: 500px;
+position: absolute;
+z-index: 3000;
+left: 500px;
+top: 200px;
+}
+
+
+/* white square */
+.white-1e1d7 {
+  background-color: #F2F4F1;
+  color: #5a3336;
+}
+/* black square */
+.black-3c85d {
+  background-color: #6a5acd;
+  color: #f2f4f1;
+}

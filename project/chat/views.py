@@ -106,8 +106,7 @@ def handle_message(msg):
         else:
             guest_name = socket.username
 
-    print(guest_name)
-    print(username)
+
     emit('message', {'data': msg['data'], 'username': username, 'guest_name': guest_name}, broadcast=True)
 
 
@@ -118,15 +117,11 @@ def handle_guest_name(msg):
             guest_name = socket.username
             emit('message', {'data': msg['data'], 'guest_name': guest_name}, broadcast=True)
 
+@socketio.on('move')
+def handle_move(msg):
+    print(msg)
+    emit('move', msg, broadcast=True)
 
-''''@socketio.on('handshake')
-def handle_handshake(msg):
-    emit('handshake', msg)
-
-
-@socketio.on('ice')
-def handle_ice(msg):
-    emit('ice', msg, broadcast=True)'''
 
 
 #on line 83 if socket.username != msg['data'] then socket.username = msg['data']
