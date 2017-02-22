@@ -156,7 +156,7 @@ socket.on('message', function (msg) {
 socket.on('username_message', function (msg) {
     let username = msg.username;
     console.log("the user name is " + username)
-    $('#header_username').text(username);
+
 });
 
 socket.on('guest_name', function (msg) {
@@ -177,6 +177,8 @@ $('#send_button').on('click', function () {
 });
 
 $('#send_username_button').on('click', function () {
+    let username = $('#username_input').val();
+    $('#header_username').text(username);
     socket.emit('username_message', {
         'data': $('#username_input').val()
     });
