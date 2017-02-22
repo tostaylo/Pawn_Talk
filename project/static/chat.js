@@ -1,3 +1,5 @@
+$('document').ready(function(){
+
 //SOCKET CONNECTION
 let socket = io.connect('//' + document.domain + ':' + location.port);
 
@@ -168,19 +170,31 @@ socket.on('guest_name', function (msg) {
 });
 
 
+//SEND CHAT MESSAGE WITH ENTER KEY AND CLICK
+$('#my_message').on('keydown', function(e){
+    if (e.which === 13){
+    socket.emit('message', {
+        'data': $('#my_message').val()
+    });
+    $('#my_message').val("")
+    return false;
+    }
+});
 
 $('#send_button').on('click', function () {
     socket.emit('message', {
         'data': $('#my_message').val()
     });
     $('#my_message').val("")
-    console.log($('#my_message').val());
     return false;
 });
 
+
+//SET USERNAME ANE EMIT USERNAME
 $('#send_username_button').on('click', function () {
     let username = $('#username_input').val();
     $('#header_username').text(username);
+    document.getElementById("my_message").focus();
     socket.emit('username_message', {
         'data': $('#username_input').val()
     });
@@ -219,4 +233,9 @@ $('#send_username_button').on('click', function () {
     $('#username_overlay').css('visibility', 'hidden');
 });
 
+//Focus input on Load
 document.getElementById("username_input").focus();
+
+
+
+});
