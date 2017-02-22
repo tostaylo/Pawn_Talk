@@ -146,12 +146,15 @@ socket.on('handshake', function(message) {
 socket.on('message', function (msg) {
     let username = $('#username_input').val();
     console.log(msg.guest_name)
+    console.log(msg.username)
     if (msg.username === username) {
         var itemR = $('<li class="buffer">'+ username +'</li><li class="right"><p class ="span_right">' + msg.data + '</p></li>').hide().fadeIn(1000);
         $('#messages').append(itemR);
         $("#messages").scrollTop($('#messages').height())
-    } else {
-        var itemL = $('<li class="buffer">'+ msg.guest_name + '</li><li class="left"><p class ="span_left">' + msg.data + '</p></li>').hide().fadeIn(1000);
+    } else if (msg.guest_name === username) {
+        console.log(msg.guest_name)
+        console.log(msg.username)
+        var itemL = $('<li class="buffer">'+ msg.username + '</li><li class="left"><p class ="span_left">' + msg.data + '</p></li>').hide().fadeIn(1000);
         $('#messages').append(itemL);
         $("#messages").scrollTop($('#messages').height())
     }
