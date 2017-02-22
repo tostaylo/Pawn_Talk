@@ -1,7 +1,7 @@
 //SOCKET CONNECTION
 let socket = io.connect('//' + document.domain + ':' + location.port);
 
-var localVideo;
+/*var localVideo;
 var remoteVideo;
 var peerConnection;
 var peerConnectionConfig = {
@@ -65,7 +65,7 @@ function gotDescription(description) {
 
     console.log('got description');
     peerConnection.setLocalDescription(description, function () {
-        socket.emit('video', JSON.stringify({
+        socket.emit('handshake', JSON.stringify({
             'sdp': description
         }));
     }, function () {
@@ -75,7 +75,7 @@ function gotDescription(description) {
 
 function gotIceCandidate(event) {
     if (event.candidate != null) {
-        socket.emit('video', JSON.stringify({
+        socket.emit('ice', JSON.stringify({
             'ice': event.candidate
         }));
     }
@@ -93,8 +93,39 @@ function createOfferError(error) {
 //ANSWERING THE CliENt
 
 
+*/
+/*
+socket.on('handshake', function(message) {
+
+    if (!peerConnection) start(false);
+    var signal = JSON.parse(message);
+    if (signal.sdp) {
+        peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function(){
+            if (signal.sdp.type == 'offer') {
+                  return peerConnection.createAnswer();
+              }
+
+        }).then(gotDescription)
+        .catch(function(){
+            console.log(arguments);
+        });
+    }
+ });
 
 
+
+ socket.on('ice', function(message) {
+  if (!peerConnection) start(false);
+    var signal = JSON.parse(message);
+     if (signal.ice) {
+        peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).then(function(){
+        console.log(arguments);
+        }).catch(function(){
+        console.log(arguments);
+        });
+    }
+});
+*/
 
 
 
@@ -112,43 +143,28 @@ function createOfferError(error) {
 
 socket.on('message', function (msg) {
     let username = $('#username_input').val();
-    console.log(msg.username);
-    console.log(username);
+
     if (msg.username === username) {
-        console.log('username is what you entered')
-        $('#messages').append('<li class="right"><span class ="span_right">' + msg.data + '</span></li><li class="buffer">li</li>');
+        $('#messages').append('<li class="buffer">yo</li><li class="right"><p class ="span_right">' + msg.data + '</p></li>');
         $("#messages").scrollTop($('#messages').height())
     } else {
-        $('#messages').append('<li class="left"><span class ="span_left">' + msg.data + '</span></li><li class="buffer">li</li>');
+        $('#messages').append('<li class="buffer">yo</li><li class="left"><p class ="span_left">' + msg.data + '</p></li>');
         $("#messages").scrollTop($('#messages').height())
     }
 });
 
 socket.on('username_message', function (msg) {
-    console.log('message received');
+    let username = msg.username;
+    console.log("the user name is " + username)
+    $('#header_username').text(username);
 });
 
-socket.on('video', function(message) {
-    debugger;
-    if (!peerConnection) start(false);
-
-    var signal = JSON.parse(message);
-    if (signal.sdp) {
-        peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function(){
-        if (signal.sdp.type == 'offer') {
-              return peerConnection.createAnswer();
-            }
-        }).then(gotDescription).catch(function(){
-        console.log(arguments);
-        });
-    } else if (signal.ice) {
-        peerConnection.addIceCandidate(new RTCIceCandidate(signal.ice)).then(function(){
-        console.log(arguments);
-        }).catch(function(){
-        console.log(arguments);
-        });
-    }
+socket.on('guest_name', function (msg) {
+    let guest_name = msg.guest_name;
+    $('#guest_name').text(guest_name)
+    console.log("the guest user name is " + guest_name)
 });
+
 
 
 $('#send_button').on('click', function () {
@@ -164,7 +180,6 @@ $('#send_username_button').on('click', function () {
     socket.emit('username_message', {
         'data': $('#username_input').val()
     });
-    console.log($('#username_input').val())
     return false;
 });
 

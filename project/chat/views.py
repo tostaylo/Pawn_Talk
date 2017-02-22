@@ -37,6 +37,8 @@ def index():
             db.session.commit()
             return redirect(url_for('chat.chat', user_route=user_url.url))
         else:
+            flash("Sorry but that room is currently taken.")
+            flash("Please choose another room.")
             return render_template('/chat/index.html', form=form)
     return render_template('/chat/index.html', form=form)
 
@@ -72,7 +74,7 @@ sockets = []
 @socketio.on('connect')
 def add_socket():
     sockets.append(Socket(request.sid))
-    print(sockets)
+
 
 
 @socketio.on('username_message')
@@ -81,9 +83,9 @@ def handle_username_message(msg):
     for socket in sockets:
         if request.sid == socket.sid:
             socket.username = msg['data']
-            print(socket.username)
 
-    emit('username_message', {'data': msg['data']}, broadcast=True)
+            username = socket.username
+            emit('username_message', {'data': msg['data'], 'username': username}, broadcast=True)
 
 
 @socketio.on('message')
@@ -91,15 +93,27 @@ def handle_message(msg):
     print(sockets)
     print(msg['data'])
     for socket in sockets:
-        print(socket)
+
         if request.sid == socket.sid:
             username = socket.username
             emit('message', {'data': msg['data'], 'username': username}, broadcast=True)
 
+@socketio.on('guest_name')
+def handle_guest_name(msg):
+    for socket in sockets:
+        if request.sid != socket.sid:
+            guest_name = socket.username
+            emit('message', {'data': msg['data'], 'guest_name': guest_name}, broadcast=True)
 
-@socketio.on('video')
-def handle_video(msg):
-    emit('video', msg, broadcast = True)
+
+''''@socketio.on('handshake')
+def handle_handshake(msg):
+    emit('handshake', msg)
+
+
+@socketio.on('ice')
+def handle_ice(msg):
+    emit('ice', msg, broadcast=True)'''
 
 
 #on line 83 if socket.username != msg['data'] then socket.username = msg['data']

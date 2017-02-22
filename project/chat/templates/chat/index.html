@@ -2,8 +2,11 @@
 
 
 {% block content %}
-<h1>Create Room</h1>
-<form action="{{url_for('chat.index')}}" method="POST">
+<div id="header"></div>
+<div id=username_overlay>
+    <div id="username_input_div">
+        <div id="username_input_div_inner">
+          <form action="{{url_for('chat.index')}}" method="POST">
     {{ form.hidden_tag() }}
   {% for field in form if field.widget.input_type != 'hidden' %}
   <p>
@@ -20,8 +23,17 @@
   {% endfor %}
 
  <div id = "add-url-button-div" >
+   {% for message in get_flashed_messages() %}
+      <p>{{ message }}</p>
+    {% endfor %}
    <button class="button" type="submit">Create Room</button>
  </div>
 </form>
+
+
+        </div>
+    </div>
+</div>
+
 
 {% endblock %}

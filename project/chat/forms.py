@@ -3,4 +3,4 @@ from wtforms import BooleanField, StringField, PasswordField, IntegerField, vali
 
 
 class UrlForm(FlaskForm):
-    url = StringField('domain/')
+    url = StringField('Create Your Room')
