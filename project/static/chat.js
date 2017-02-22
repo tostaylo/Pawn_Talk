@@ -62,7 +62,7 @@ function start(isCaller) {
 
 
 function gotDescription(description) {
-debugger;
+
     console.log('got description');
     peerConnection.setLocalDescription(description, function () {
         socket.emit('video', JSON.stringify({
@@ -136,9 +136,9 @@ socket.on('video', function(message) {
     if (signal.sdp) {
         peerConnection.setRemoteDescription(new RTCSessionDescription(signal.sdp)).then(function(){
         if (signal.sdp.type == 'offer') {
-                peerConnection.createAnswer(gotDescription, createAnswerError);
+              return peerConnection.createAnswer();
             }
-        }).catch(function(){
+        }).then(gotDescription).catch(function(){
         console.log(arguments);
         });
     } else if (signal.ice) {
