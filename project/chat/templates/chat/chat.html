@@ -1,8 +1,8 @@
 {% extends 'base.html' %} {% block content %}
 <div id="header-none">
-    <div id ="header_username_container">
+    <div id="header_username_container">
         <i class="fa fa-3x fa-user" aria-hidden="true"></i>
-    <div id="header_username"></div>
+        <div id="header_username"></div>
     </div>
 </div>
 <div id=username_overlay>
@@ -17,34 +17,39 @@
 <div id=outer_container>
     <div id="inner_container">
 
-    <div id="link"></div>
-    <button class="button" id="copy">Copy Room Link<i class="fa fa-lg fa-clipboard" aria-hidden="true"></i></button>
 
 
 
 
-    <div id="board_chat_container">
-        <div id="game_container">
-     <div id="gameBoard"></div>
-         <p><span id="status"></span></p>
-            <input class="game-button" type="button" id="startBtn" value="Start" />
-            <input class="game-button" type="button" id="flipBtn" value="Flip" />
-     </div>
-    <div id="messages_container">
-        <div id = "guest_name"></div>
-        <div id="message_list_div">
-            <ul id="messages"></ul>
+
+        <div id="board_chat_container">
+            <div id="game_container">
+                <div id="gameBoard"></div>
+                <div id="board_button_container">
+                    <p><span id="status"></span></p>
+                    <button class="button" type="button" id="startBtn">Restart Game</button>
+                </div>
+
+            </div>
+            <div id="messages_container">
+                <div id="guest_name"></div>
+                <div id="message_list_div">
+                    <ul id="messages"></ul>
+                </div>
+                <div id="message_input_container">
+                    <input placeholder="message" type="text" id="my_message">
+                    <button class="button" id="send_button"><i class="fa fa-comment-o" aria-hidden="true"></i></button>
+                </div>
+                <div id="bottom_container">
+                    <div id="link"></div>
+                    <button class="button" id="copy">Copy Room Link<i class="fa fa-lg fa-clipboard" aria-hidden="true"></i></button>
+                </div>
+            </div>
         </div>
-        <div id="message_input_container">
-            <input placeholder="message" type="text" id="my_message">
-            <button class="button" id="send_button"><i class="fa fa-comment-o" aria-hidden="true"></i></button>
-        </div>
+
+
+
     </div>
-</div>
-
-
-
-</div>
 
 </div>
 

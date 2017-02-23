@@ -17,17 +17,17 @@ let socket = io.connect('//' + document.domain + ':' + location.port);
  });*/
 
 
-//SEND AND RECEIVE CHAT MESSAGES, SEPARATE BY USERNAME AND GUESTNAME
+//SEND AND RECEIVE CHAT MESSAGES, SEPARATE BY USERNAME AND GUESTNAM
 socket.on('message', function (msg) {
     let username = $('#username_input').val();
 
     if (msg.username === username) {
-        var itemR = $('<li class="buffer">'+ username +'</li><li class="right"><p class ="span_right">' + msg.data + '</p></li>').hide().fadeIn(1300);
+        var itemR = $('<li class="buffer">' + username + '</li><li class="right"><p class ="span_right">' + msg.data + '</p></li>').hide().fadeIn(1300);
         $('#messages').append(itemR);
         $("#messages").scrollTop($('#messages').height())
         board.position(game.fen());
     } else if (msg.guest_name === username) {
-        var itemL = $('<li class="buffer">'+ msg.username + '</li><li class="left"><p class ="span_left">' + msg.data + '</p></li>').hide().fadeIn(1300);
+        var itemL = $('<li class="buffer">' + msg.username + '</li><li class="left"><p class ="span_left">' + msg.data + '</p></li>').hide().fadeIn(1300);
         $('#messages').append(itemL);
         $("#messages").scrollTop($('#messages').height())
     }
@@ -45,13 +45,13 @@ socket.on('username_message', function (msg) {
 
 
 //SEND CHAT MESSAGE WITH ENTER KEY AND CLICK
-$('#my_message').on('keydown', function(e){
-    if (e.which === 13){
-    socket.emit('message', {
-        'data': $('#my_message').val()
-    });
-    $('#my_message').val("")
-    return false;
+$('#my_message').on('keydown', function (e) {
+    if (e.which === 13) {
+        socket.emit('message', {
+            'data': $('#my_message').val()
+        });
+        $('#my_message').val("")
+        return false;
     }
 });
 
@@ -117,8 +117,8 @@ document.getElementById("username_input").focus();
 
 ///CHESSSSSSSSS////////////////////
 var board,
-  game = new Chess(),
-  statusEl = $('#status')
+    game = new Chess(),
+    statusEl = $('#status')
 
 
 
@@ -129,86 +129,88 @@ var board,
 
 socket.on('move', function (msg) {
     game.move(msg);
-    board = ChessBoard('gameBoard', Object.assign({}, cfg, {position: game.fen()}));
+    board = ChessBoard('gameBoard', Object.assign({}, cfg, {
+        position: game.fen()
+    }));
     //board.position(game.fen());
 });
 
 
 // do not pick up pieces if the game is over
 // only pick up pieces for the side to move
-var onDragStart = function(source, piece, position, orientation) {
-  if (game.game_over() === true ||
-      (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
-      (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
-    return false;
-  }
+var onDragStart = function (source, piece, position, orientation) {
+    if (game.game_over() === true ||
+        (game.turn() === 'w' && piece.search(/^b/) !== -1) ||
+        (game.turn() === 'b' && piece.search(/^w/) !== -1)) {
+        return false;
+    }
 };
 
-var onDrop = function(source, target) {
-  // see if the move is legal
-  var move = game.move({
-    from: source,
-    to: target,
-    promotion: 'q' // NOTE: always promote to a queen for example simplicity
-  });
-  // illegal move
-  if (move === null) return 'snapback';
+var onDrop = function (source, target) {
+    // see if the move is legal
+    var move = game.move({
+        from: source,
+        to: target,
+        promotion: 'q' // NOTE: always promote to a queen for example simplicity
+    });
+    // illegal move
+    if (move === null) return 'snapback';
 
-  socket.emit('move', move);
-
-
+    socket.emit('move', move);
 
 
 
 
-  updateStatus();
+
+
+    updateStatus();
 };
 
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
-var onSnapEnd = function() {
-board.position(game.fen());
+var onSnapEnd = function () {
+    board.position(game.fen());
 };
 
-var updateStatus = function() {
-  var status = '';
+var updateStatus = function () {
+    var status = '';
 
-  var moveColor = 'White';
-  if (game.turn() === 'b') {
-    moveColor = 'Black';
-  }
-
-  // checkmate?
-  if (game.in_checkmate() === true) {
-    status = 'Game over, ' + moveColor + ' is in checkmate.';
-  }
-
-  // draw?
-  else if (game.in_draw() === true) {
-    status = 'Game over, drawn position';
-  }
-
-  // game still on
-  else {
-    status = moveColor + ' to move';
-
-    // check?
-    if (game.in_check() === true) {
-      status += ', ' + moveColor + ' is in check';
+    var moveColor = 'White';
+    if (game.turn() === 'b') {
+        moveColor = 'Black';
     }
-  }
 
-  statusEl.html(status);
+    // checkmate?
+    if (game.in_checkmate() === true) {
+        status = 'Game over, ' + moveColor + ' is in checkmate.';
+    }
+
+    // draw?
+    else if (game.in_draw() === true) {
+        status = 'Game over, drawn position';
+    }
+
+    // game still on
+    else {
+        status = moveColor + ' to move';
+
+        // check?
+        if (game.in_check() === true) {
+            status += ', ' + moveColor + ' is in check';
+        }
+    }
+
+    statusEl.html(status);
 
 };
 
 var cfg = {
-  pieceTheme: '../../../static/chessboardjs/img/chesspieces/wikipedia/{piece}.png',
-  draggable: true,
-  position: 'start',
-  onDragStart: onDragStart,
-  onDrop: onDrop,
-  onSnapEnd: onSnapEnd
+    pieceTheme: '../../../static/chessboardjs/img/chesspieces/wikipedia/{piece}.png',
+    draggable: true,
+    position: 'start',
+    onDragStart: onDragStart,
+    onDrop: onDrop,
+    onSnapEnd: onSnapEnd
 };
 board = ChessBoard('gameBoard', cfg);
 
@@ -219,14 +221,14 @@ updateStatus();
 
 
 
-$('#startBtn').on('click', function() {
+$('#startBtn').on('click', function () {
     game.clear();
     board = ChessBoard('gameBoard', cfg);
     game = new Chess();
     socket.emit('restart')
 });
 
-socket.on('restart', function(){
+socket.on('restart', function () {
     game.clear();
     board = ChessBoard('gameBoard', cfg);
     game = new Chess();
@@ -235,7 +237,7 @@ socket.on('restart', function(){
 
 
 
-$('#flipBtn').on('click', board.flip);
+
 
 
 //});
