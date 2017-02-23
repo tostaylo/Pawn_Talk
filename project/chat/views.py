@@ -73,6 +73,7 @@ sockets = []
 def add_socket():
     sockets.append(Socket(request.sid))
     print(sockets)
+    emit('user_connect', {'data' : 'user connected'})
 
 @socketio.on('disconnect')
 def remove_socket():

@@ -4,30 +4,37 @@
 let socket = io.connect('//' + document.domain + ':' + location.port);
 
 
+let guest = ''
 
 
 
 
-/* socket.on('connect', function() {
-     socket.send('user connected');
- });
+socket.on('user_connect', function (msg) {
 
- socket.on('disconnect', function() {
-     socket.send('user disconnected')
- });*/
+    console.log(msg.data);
+});
 
+
+/*
+socket.on('disconnect', function () {
+    socket.send('user disconnected')
+});
+*/
 
 //SEND AND RECEIVE CHAT MESSAGES, SEPARATE BY USERNAME AND GUESTNAM
 socket.on('message', function (msg) {
     let username = $('#username_input').val();
 
     if (msg.username === username) {
-        var itemR = $('<li class="buffer">' + username + '</li><li class="right"><p class ="span_right">' + msg.data + '</p></li>').hide().fadeIn(1300);
+        var itemR = $('<li class="buffer">' + username + '</li><li class="right"><p class ="span_right">' + msg.data + '</p></li>').hide().fadeIn(1100);
         $('#messages').append(itemR);
         $("#messages").scrollTop($('#messages').height())
-        board.position(game.fen());
+
     } else if (msg.guest_name === username) {
-        var itemL = $('<li class="buffer">' + msg.username + '</li><li class="left"><p class ="span_left">' + msg.data + '</p></li>').hide().fadeIn(1300);
+        guest = msg.guest_name;
+        console.log(guest);
+        $('#guest_name').text(`${msg.username}`).hide().show();
+        var itemL = $('<li class="buffer">' + msg.username + '</li><li class="left"><p class ="span_left">' + msg.data + '</p></li>').hide().fadeIn(1100);
         $('#messages').append(itemL);
         $("#messages").scrollTop($('#messages').height())
     }
@@ -35,7 +42,7 @@ socket.on('message', function (msg) {
 
 socket.on('username_message', function (msg) {
     let username = msg.username;
-    console.log("the user name is " + username)
+    $('#guest_name').text(`${username} is connected`).hide().show().fadeOut();
 
 });
 
@@ -121,18 +128,13 @@ var board,
     statusEl = $('#status')
 
 
-
-
-
-
-
-
 socket.on('move', function (msg) {
     game.move(msg);
     board = ChessBoard('gameBoard', Object.assign({}, cfg, {
         position: game.fen()
     }));
     //board.position(game.fen());
+    updateStatus();
 });
 
 
@@ -156,12 +158,9 @@ var onDrop = function (source, target) {
     // illegal move
     if (move === null) return 'snapback';
 
+
+    //Send Move To All Clients
     socket.emit('move', move);
-
-
-
-
-
 
     updateStatus();
 };
@@ -175,14 +174,14 @@ var onSnapEnd = function () {
 var updateStatus = function () {
     var status = '';
 
-    var moveColor = 'White';
-    if (game.turn() === 'b') {
-        moveColor = 'Black';
-    }
+    /* var moveColor = 'White';
+     if (game.turn() === 'b') {
+         moveColor = 'Black';
+     }*/
 
     // checkmate?
     if (game.in_checkmate() === true) {
-        status = 'Game over, ' + moveColor + ' is in checkmate.';
+        status = 'Checkmate';
     }
 
     // draw?
@@ -192,11 +191,11 @@ var updateStatus = function () {
 
     // game still on
     else {
-        status = moveColor + ' to move';
+        //status = moveColor + ' to move';
 
         // check?
         if (game.in_check() === true) {
-            status += ', ' + moveColor + ' is in check';
+            status += 'check';
         }
     }
 
@@ -225,13 +224,17 @@ $('#startBtn').on('click', function () {
     game.clear();
     board = ChessBoard('gameBoard', cfg);
     game = new Chess();
-    socket.emit('restart')
+    socket.emit('restart');
+
+    updateStatus();
 });
 
 socket.on('restart', function () {
     game.clear();
     board = ChessBoard('gameBoard', cfg);
     game = new Chess();
+
+    updateStatus();
 })
 
 
