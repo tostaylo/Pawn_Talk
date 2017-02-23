@@ -122,7 +122,10 @@ def handle_move(msg):
     print(msg)
     emit('move', msg, broadcast=True)
 
-
+@socketio.on('restart')
+def handle_restart():
+    print('got message')
+    emit('restart', broadcast=True)
 
 #on line 83 if socket.username != msg['data'] then socket.username = msg['data']
 #else display a message, username is taken

@@ -39,11 +39,7 @@ socket.on('username_message', function (msg) {
 
 });
 
-socket.on('move', function (msg) {
-    game.move(msg);
-    board = ChessBoard('gameBoard', Object.assign({}, cfg, {position: game.fen()}));
-    //board.position(game.fen());
-});
+
 
 
 
@@ -120,16 +116,22 @@ document.getElementById("username_input").focus();
 
 
 ///CHESSSSSSSSS////////////////////
-
-
-
-
-
-
-
 var board,
   game = new Chess(),
   statusEl = $('#status')
+
+
+
+
+
+
+
+
+socket.on('move', function (msg) {
+    game.move(msg);
+    board = ChessBoard('gameBoard', Object.assign({}, cfg, {position: game.fen()}));
+    //board.position(game.fen());
+});
 
 
 // do not pick up pieces if the game is over
@@ -165,7 +167,7 @@ var onDrop = function(source, target) {
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
 var onSnapEnd = function() {
-
+board.position(game.fen());
 };
 
 var updateStatus = function() {
@@ -217,20 +219,23 @@ updateStatus();
 
 
 
+$('#startBtn').on('click', function() {
+    game.clear();
+    board = ChessBoard('gameBoard', cfg);
+    game = new Chess();
+    socket.emit('restart')
+});
+
+socket.on('restart', function(){
+    game.clear();
+    board = ChessBoard('gameBoard', cfg);
+    game = new Chess();
+})
 
 
 
 
-
-
-
-// called when a player makes a move on the board UI
-var handleMove = function(source, target) {
-    const move = {from: source, to: target}
-    game.move(move);
-}
-
-
+$('#flipBtn').on('click', board.flip);
 
 
 //});
