@@ -2,15 +2,9 @@
 
 //SOCKET CONNECTION
 let socket = io.connect('//' + document.domain + ':' + location.port);
-
-
-let guest = ''
-
-
-
+let guest = '';
 
 socket.on('user_connect', function (msg) {
-
     console.log(msg.data);
 });
 
@@ -42,7 +36,7 @@ socket.on('message', function (msg) {
 
 socket.on('username_message', function (msg) {
     let username = msg.username;
-    $('#guest_name').text(`${username} is connected`).hide().show().fadeOut();
+    $('#guest_name').text(`${username} is connected`).hide().show().fadeOut(2000);
 
 });
 
@@ -72,6 +66,8 @@ $('#send_button').on('click', function () {
 
 
 //SET USERNAME ANE EMIT USERNAME
+//Hide Username Overlay On click
+document.getElementById("username_input").focus();
 $('#send_username_button').on('click', function () {
     let username = $('#username_input').val();
     $('#header_username').text(username);
@@ -79,8 +75,28 @@ $('#send_username_button').on('click', function () {
     socket.emit('username_message', {
         'data': $('#username_input').val()
     });
+    $('#username_overlay').css('visibility', 'hidden');
+    //Focus username input 
+    document.getElementById("username_input").focus();
     return false;
 });
+
+$('#username_input').on('keydown', function (e) {
+    if (e.which === 13) {
+        let username = $('#username_input').val();
+        $('#header_username').text(username);
+        document.getElementById("my_message").focus();
+        socket.emit('username_message', {
+            'data': $('#username_input').val()
+        });
+        $('#username_overlay').css('visibility', 'hidden');
+        //Focus username input 
+
+        return false;
+    }
+});
+
+
 
 
 
@@ -108,14 +124,6 @@ copyBtn.addEventListener('click', function () {
 
 
 
-
-//Hide Username Overlay On click
-$('#send_username_button').on('click', function () {
-    $('#username_overlay').css('visibility', 'hidden');
-});
-
-//Focus input on Load
-document.getElementById("username_input").focus();
 
 
 
@@ -221,7 +229,7 @@ updateStatus();
 
 
 
-
+//RESET PIECES ON CLICK
 $('#startBtn').on('click', function () {
     game.clear();
     board = ChessBoard('gameBoard', cfg);
@@ -231,6 +239,7 @@ $('#startBtn').on('click', function () {
     updateStatus();
 });
 
+//SEND RESET MESSAGE TO ALL CLIENTS
 socket.on('restart', function () {
     game.clear();
     board = ChessBoard('gameBoard', cfg);
