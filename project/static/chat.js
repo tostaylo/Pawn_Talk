@@ -163,12 +163,14 @@ var onDrop = function (source, target) {
     socket.emit('move', move);
 
     updateStatus();
+
 };
 
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
 var onSnapEnd = function () {
     board.position(game.fen());
+
 };
 
 var updateStatus = function () {
@@ -236,8 +238,6 @@ socket.on('restart', function () {
 
     updateStatus();
 })
-
-
 
 
 
