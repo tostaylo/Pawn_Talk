@@ -1,4 +1,4 @@
-$('document').ready(function(){
+//$('document').ready(function(){
 
 //SOCKET CONNECTION
 let socket = io.connect('//' + document.domain + ':' + location.port);
@@ -22,11 +22,12 @@ socket.on('message', function (msg) {
     let username = $('#username_input').val();
 
     if (msg.username === username) {
-        var itemR = $('<li class="buffer">'+ username +'</li><li class="right"><p class ="span_right">' + msg.data + '</p></li>').hide().fadeIn(1000);
+        var itemR = $('<li class="buffer">'+ username +'</li><li class="right"><p class ="span_right">' + msg.data + '</p></li>').hide().fadeIn(1300);
         $('#messages').append(itemR);
         $("#messages").scrollTop($('#messages').height())
+        board.position(game.fen());
     } else if (msg.guest_name === username) {
-        var itemL = $('<li class="buffer">'+ msg.username + '</li><li class="left"><p class ="span_left">' + msg.data + '</p></li>').hide().fadeIn(1000);
+        var itemL = $('<li class="buffer">'+ msg.username + '</li><li class="left"><p class ="span_left">' + msg.data + '</p></li>').hide().fadeIn(1300);
         $('#messages').append(itemL);
         $("#messages").scrollTop($('#messages').height())
     }
@@ -40,8 +41,8 @@ socket.on('username_message', function (msg) {
 
 socket.on('move', function (msg) {
     game.move(msg);
-    console.log(msg);
-    board.position(game.fen()); // fen is the board layout
+    board = ChessBoard('gameBoard', Object.assign({}, cfg, {position: game.fen()}));
+    //board.position(game.fen());
 });
 
 
@@ -118,7 +119,7 @@ document.getElementById("username_input").focus();
 
 
 
-///CHESSSSSSSSS
+///CHESSSSSSSSS////////////////////
 
 
 
@@ -128,9 +129,8 @@ document.getElementById("username_input").focus();
 
 var board,
   game = new Chess(),
-  statusEl = $('#status'),
-  fenEl = $('#fen'),
-  pgnEl = $('#pgn');
+  statusEl = $('#status')
+
 
 // do not pick up pieces if the game is over
 // only pick up pieces for the side to move
@@ -149,11 +149,15 @@ var onDrop = function(source, target) {
     to: target,
     promotion: 'q' // NOTE: always promote to a queen for example simplicity
   });
-
-  handleMove(move.from, move.to);
-
   // illegal move
   if (move === null) return 'snapback';
+
+  socket.emit('move', move);
+
+
+
+
+
 
   updateStatus();
 };
@@ -161,7 +165,6 @@ var onDrop = function(source, target) {
 // update the board position after the piece snap
 // for castling, en passant, pawn promotion
 var onSnapEnd = function() {
-  board.position(game.fen());
 
 };
 
@@ -194,8 +197,7 @@ var updateStatus = function() {
   }
 
   statusEl.html(status);
-  fenEl.html(game.fen());
-  pgnEl.html(game.pgn());
+
 };
 
 var cfg = {
@@ -224,13 +226,11 @@ updateStatus();
 
 // called when a player makes a move on the board UI
 var handleMove = function(source, target) {
-    console.log(source,target)
     const move = {from: source, to: target}
     game.move(move);
-    socket.emit('move', move);
 }
 
 
 
 
-});
+//});

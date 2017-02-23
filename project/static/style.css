@@ -142,9 +142,6 @@ color: white;
 }
 
 #messages_container {
-    position: absolute;
-    left: 50px;
-    top: 20vh;
     width: 300px;
     text-align: center;
     overflow: auto;
@@ -275,14 +272,26 @@ margin-left: 10px;
 .fa-comment-o{
 color: white;
 }
+#board_chat_container{
+display: flex;
+width: 90%;
+margin: 0 auto;
+margin-top: 200px;
+align-content: center;
+justify-content: space-around;
+}
+
+#game_container p{
+width: 50%;
+margin: 0 auto;
+text-align: center;
+color: white;
+font-size: 18px;
+}
 
 #gameBoard{
 width: 500px;
 height: 500px;
-position: absolute;
-z-index: 3000;
-left: 500px;
-top: 200px;
 }
 
 
