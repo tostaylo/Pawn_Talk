@@ -69,7 +69,7 @@ class Socket:
 
 sockets = []
 
-##look in array and find the sid with the request.sid, send username with the message.
+
 
 @socketio.on('connect')
 def add_socket():
@@ -79,6 +79,9 @@ def add_socket():
 
 @socketio.on('join_room')
 def join(msg):
+    for socket in sockets:
+        if socket.sid == request.sid:
+            socket.room = msg['room']
     join_room(msg['room'])
 
 
@@ -87,11 +90,10 @@ def remove_socket():
     for socket in sockets:
         if socket.sid == request.sid:
             username  = socket.username
-            print(username)
+            room = socket.room
             sockets.remove(socket)
-            emit('disconnect', {'data': username}, broadcast=True)
-
-
+            print(sockets)
+            emit('disconnect', {'data': username}, room=room, broadcast=True)
 
 @socketio.on('username_message')
 def handle_username_message(msg):
@@ -99,8 +101,8 @@ def handle_username_message(msg):
         if request.sid == socket.sid:
             socket.username = msg['data']
             username = socket.username
-            emit('username_message', {'data': msg['data'], 'username': username}, broadcast=True)
-
+            room = socket.room
+            emit('username_message', {'data': msg['data'], 'username': username},room=room, broadcast=True)
 
 @socketio.on('message')
 def handle_message(msg):
@@ -109,17 +111,10 @@ def handle_message(msg):
     for socket in sockets:
         if request.sid == socket.sid:
             username = socket.username
-        else:
+        elif request.sid != socket.sid and socket.room == msg['room']:
             guest_name = socket.username
     emit('message', {'data': msg['data'], 'username': username, 'guest_name': guest_name}, broadcast=True, room=msg['room'])
 
-
-@socketio.on('guest_name')
-def handle_guest_name(msg):
-    for socket in sockets:
-        if request.sid != socket.sid:
-            guest_name = socket.username
-            emit('message', {'data': msg['data'], 'guest_name': guest_name}, broadcast=True)
 
 @socketio.on('move')
 def handle_move(msg):

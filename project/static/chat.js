@@ -1,17 +1,17 @@
 //$('document').ready(function(){
-
+console.log($(location).attr('href'));
+console.log($(location).attr('href').split('/'));
 //SOCKET CONNECTION
 let socket = io.connect('//' + document.domain + ':' + location.port);
 let guest = '';
 
-socket.on('user_connect', function (msg) {
-    console.log(msg.data);
-});
 
-socket.on('connect', function(){
-     socket.emit('join_room', {
-            'room': $(location).attr('href').split('/')[3]
-        });
+
+//ON CONNECT ADD SOCKET.ROOM as the window location
+socket.on('connect', function () {
+    socket.emit('join_room', {
+        'room': $(location).attr('href').split('/')[3]
+    });
 })
 
 //Show username who disconnects
@@ -24,7 +24,7 @@ socket.on('disconnect', function (msg) {
 //SEND AND RECEIVE CHAT MESSAGES, SEPARATE BY USERNAME AND GUESTNAME
 socket.on('message', function (msg) {
     let username = $('#username_input').val();
-
+    console.log(msg.data);
     if (msg.username === username) {
         var itemR = $('<li class="buffer">' + username + '</li><li class="right"><p class ="span_right">' + msg.data + '</p></li>').hide().fadeIn(1100);
         $('#messages').append(itemR);
@@ -178,9 +178,9 @@ var onDrop = function (source, target) {
     //Send Move To All Clients
     //socket.emit('move', move);
     socket.emit('move', {
-            'move': move,
-            'room': $(location).attr('href').split('/')[3]
-        });
+        'move': move,
+        'room': $(location).attr('href').split('/')[3]
+    });
 
     updateStatus();
 
@@ -246,7 +246,9 @@ $('#startBtn').on('click', function () {
     game.clear();
     board = ChessBoard('gameBoard', cfg);
     game = new Chess();
-    socket.emit('restart',{'room': $(location).attr('href').split('/')[3]});
+    socket.emit('restart', {
+        'room': $(location).attr('href').split('/')[3]
+    });
 
     updateStatus();
 });
