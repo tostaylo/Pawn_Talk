@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, Blueprint
-from flask_socketio import SocketIO, send, emit
+from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from project.chat.forms import UrlForm
 from project.models import ChatRoom
 from project import db, app, socketio
@@ -33,6 +33,7 @@ def index():
             url = ChatRoom(user_url.url)
             db.session.add(url)
             db.session.commit()
+            #join_room(url)
             return redirect(url_for('chat.chat', user_route=user_url.url))
         else:
             flash("Sorry but that room is currently taken.")
@@ -63,6 +64,7 @@ class Socket:
         self.sid = sid
         self.connected = True
         self.username = sid
+        self.room = sid
 
 
 sockets = []
@@ -72,7 +74,13 @@ sockets = []
 @socketio.on('connect')
 def add_socket():
     sockets.append(Socket(request.sid))
+    print(sockets)
     emit('user_connect', {'data' : 'user connected'})
+
+@socketio.on('join_room')
+def join(msg):
+    join_room(msg['room'])
+
 
 @socketio.on('disconnect')
 def remove_socket():
@@ -94,8 +102,6 @@ def handle_username_message(msg):
             emit('username_message', {'data': msg['data'], 'username': username}, broadcast=True)
 
 
-
-
 @socketio.on('message')
 def handle_message(msg):
     username = ''
@@ -103,13 +109,9 @@ def handle_message(msg):
     for socket in sockets:
         if request.sid == socket.sid:
             username = socket.username
-
-
         else:
             guest_name = socket.username
-
-
-    emit('message', {'data': msg['data'], 'username': username, 'guest_name': guest_name}, broadcast=True)
+    emit('message', {'data': msg['data'], 'username': username, 'guest_name': guest_name}, broadcast=True, room=msg['room'])
 
 
 @socketio.on('guest_name')
@@ -122,16 +124,9 @@ def handle_guest_name(msg):
 @socketio.on('move')
 def handle_move(msg):
     print(msg)
-    emit('move', msg, broadcast=True)
+    emit('move', {'move':msg['move']}, broadcast=True, room=msg['room'])
 
 @socketio.on('restart')
-def handle_restart():
+def handle_restart(msg):
+    emit('restart', broadcast=True, room=msg['room'])
 
-    emit('restart', broadcast=True)
-
-#on line 83 if socket.username != msg['data'] then socket.username = msg['data']
-#else display a message, username is taken
-# could be done with sending a true or false variable to javascript
-# if true then show the error if false then remove the input field.
-#have to emit a 'username error' message probably and have an event listener ready for it, might be a specific event in the docs
-# OR I could force them to pick a username

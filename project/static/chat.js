@@ -8,6 +8,11 @@ socket.on('user_connect', function (msg) {
     console.log(msg.data);
 });
 
+socket.on('connect', function(){
+     socket.emit('join_room', {
+            'room': $(location).attr('href').split('/')[3]
+        });
+})
 
 //Show username who disconnects
 socket.on('disconnect', function (msg) {
@@ -50,7 +55,8 @@ socket.on('username_message', function (msg) {
 $('#my_message').on('keydown', function (e) {
     if (e.which === 13) {
         socket.emit('message', {
-            'data': $('#my_message').val()
+            'data': $('#my_message').val(),
+            'room': $(location).attr('href').split('/')[3]
         });
         $('#my_message').val("")
         return false;
@@ -59,7 +65,8 @@ $('#my_message').on('keydown', function (e) {
 
 $('#send_button').on('click', function () {
     socket.emit('message', {
-        'data': $('#my_message').val()
+        'data': $('#my_message').val(),
+        'room': $(location).attr('href').split('/')[3]
     });
     $('#my_message').val("")
     return false;
@@ -138,7 +145,7 @@ var board,
 
 
 socket.on('move', function (msg) {
-    game.move(msg);
+    game.move(msg['move']);
     board = ChessBoard('gameBoard', Object.assign({}, cfg, {
         position: game.fen()
     }));
@@ -169,7 +176,11 @@ var onDrop = function (source, target) {
 
 
     //Send Move To All Clients
-    socket.emit('move', move);
+    //socket.emit('move', move);
+    socket.emit('move', {
+            'move': move,
+            'room': $(location).attr('href').split('/')[3]
+        });
 
     updateStatus();
 
@@ -235,7 +246,7 @@ $('#startBtn').on('click', function () {
     game.clear();
     board = ChessBoard('gameBoard', cfg);
     game = new Chess();
-    socket.emit('restart');
+    socket.emit('restart',{'room': $(location).attr('href').split('/')[3]});
 
     updateStatus();
 });
