@@ -13,8 +13,19 @@ body {
     background: black;
 }
 
+#header-none {
+    background: rgba(0, 0, 0, .1);
+}
+
 .fa {
     color: #6a5acd;
+}
+
+#outer_logo_container {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 3000;
 }
 
 #logo_name {
@@ -27,6 +38,7 @@ body {
 #logo_name h3 {
     font-size: 1.7em;
     margin: 0;
+    text-shadow: 1px -1px #f5eded;
 }
 
 #logo_container {
@@ -170,6 +182,10 @@ button:focus {
     color: white;
     font-size: 14px;
     cursor: pointer;
+}
+
+.button:hover {
+    filter: brightness(80%);
 }
 
 #link {
@@ -437,4 +453,20 @@ ul {
 .fa-clipboard {
     color: #6a5acd;
     margin-left: 10px;
+}
+
+#credit_div {
+    position: absolute;
+    bottom: 0;
+    left: 20px;
+    color: gray;
+    z-index: 3000;
+}
+
+.credit_p {
+    display: none;
+}
+
+#credit_div:hover p {
+    display: block;
 }

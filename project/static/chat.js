@@ -16,7 +16,7 @@ socket.on('disconnect', function (msg) {
 });
 
 
-//SEND AND RECEIVE CHAT MESSAGES, SEPARATE BY USERNAME AND GUESTNAM
+//SEND AND RECEIVE CHAT MESSAGES, SEPARATE BY USERNAME AND GUESTNAME
 socket.on('message', function (msg) {
     let username = $('#username_input').val();
 
