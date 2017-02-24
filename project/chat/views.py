@@ -72,15 +72,16 @@ sockets = []
 @socketio.on('connect')
 def add_socket():
     sockets.append(Socket(request.sid))
-    print(sockets)
     emit('user_connect', {'data' : 'user connected'})
 
 @socketio.on('disconnect')
 def remove_socket():
     for socket in sockets:
         if socket.sid == request.sid:
+            username  = socket.username
+            print(username)
             sockets.remove(socket)
-            print(sockets)
+            emit('disconnect', {'data': username}, broadcast=True)
 
 
 
@@ -125,7 +126,7 @@ def handle_move(msg):
 
 @socketio.on('restart')
 def handle_restart():
-    print('got message')
+
     emit('restart', broadcast=True)
 
 #on line 83 if socket.username != msg['data'] then socket.username = msg['data']

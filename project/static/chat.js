@@ -9,11 +9,12 @@ socket.on('user_connect', function (msg) {
 });
 
 
-/*
-socket.on('disconnect', function () {
-    socket.send('user disconnected')
+//Show username who disconnects
+socket.on('disconnect', function (msg) {
+    console.log(msg.data);
+    $('#guest_name').text(`${msg.data} has disconnected`).hide().show().fadeOut(2000);
 });
-*/
+
 
 //SEND AND RECEIVE CHAT MESSAGES, SEPARATE BY USERNAME AND GUESTNAM
 socket.on('message', function (msg) {
