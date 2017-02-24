@@ -1,5 +1,6 @@
 * {
     box-sizing: border-box;
+    font-family: 'Lato', sans-serif;
 }
 
 body {
@@ -127,7 +128,7 @@ button:focus {
     top: 0;
     left: 0;
     width: 100%;
-    height: 250vh;
+    height: 100vh;
     z-index: 1000;
 }
 
@@ -206,7 +207,7 @@ video {
 #outer_container,
 #inner_container {
     width: 100%;
-    height: 250vh;
+    height: 100vh;
     margin: 0 auto;
     position: relative;
     border: 1px solid black;
@@ -368,9 +369,7 @@ ul {
     flex-wrap: wrap;
 }
 
-#game_container {
-    margin-bottom: 200px;
-}
+#game_container {}
 
 #game_container p {
     width: 90%;
