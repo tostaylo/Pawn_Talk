@@ -3,8 +3,8 @@ from flask_socketio import SocketIO, send, emit, join_room, leave_room
 from project.chat.forms import UrlForm
 from project.models import ChatRoom
 from project import db, app, socketio
-from base64 import b64encode
-from os import urandom
+
+
 
 
 
@@ -118,8 +118,8 @@ def handle_message(msg):
 
 @socketio.on('move')
 def handle_move(msg):
-    print(msg)
-    emit('move', {'move':msg['move']}, broadcast=True, room=msg['room'])
+    print(msg['whos_move'])
+    emit('move', {'move':msg['move'], 'whos_move': msg['whos_move']}, broadcast=True, room=msg['room'])
 
 @socketio.on('restart')
 def handle_restart(msg):

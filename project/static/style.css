@@ -425,17 +425,17 @@ ul {
 
 #board_button_container {
     width: 200px;
-    height: 70px;
     text-align: center;
     margin: 0 auto;
 }
 
 #board_button_container p {
+    margin-top: 10px;
     height: 20px;
 }
 
 #startBtn {
-    margin: 0 auto;
+    margin: 25px auto 0 auto;
 }
 
 #bottom_container {
