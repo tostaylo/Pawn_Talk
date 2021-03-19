@@ -12,7 +12,7 @@ Flask-WTF==0.14.2
 greenlet==0.4.12
 gunicorn==19.6.0
 itsdangerous==0.24
-Jinja2==2.9.5
+Jinja2==2.11.3
 Mako==1.0.6
 MarkupSafe==0.23
 packaging==16.8
